@@ -9,13 +9,14 @@ export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
 
-  const handleAction = () => {
-    // محاكاة تسجيل ناجح
+const handleAction = () => {
+    // محاكاة تسجيل ناجح مع مراعاة مسميات TypeScript في الـ Store
     login({ 
-      name: formData.name || "New User", 
+      username: formData.name || "New User", // تم تغيير name إلى username
       email: formData.email, 
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky" 
+      image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name || 'Eman'}` 
     });
+    
     router.push("/");
   };
 

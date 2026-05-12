@@ -33,12 +33,9 @@ export interface Product {
 }
 
 export interface User {
-  id?: number;
-  username: string;
-  email?: string;
-  password?: string;
-  image?: string;
-}
+  username: string; // لو دي مكتوبة username غيريها لـ name
+  email: string;
+  image: string; }
 
 // تعريف دقيق لمحتويات الطلب بدل استخدام any
 interface OrderProduct {
