@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSalesStore } from "@/src/Store/useSalesStore";
 import { Button } from "@/src/Components/Ui/Button";
-import { Mail, Lock, User, Github } from "lucide-react";
-
+import { Mail, Lock, User } from "lucide-react"; // شيلنا Github من هنا
 export default function RegisterPage() {
   const login = useSalesStore((state) => state.login);
   const router = useRouter();
