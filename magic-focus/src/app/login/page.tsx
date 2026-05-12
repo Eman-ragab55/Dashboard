@@ -13,15 +13,17 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // محاكاة تسجيل الدخول ببيانات متوافقة مع الـ User Interface
+    
+    // بنستخدم الـ email والـ password في التحقق (Validation) فقط
     if (email && password) {
       login({ 
-        username: "Eman Ragab", // غيرناها من name لـ username عشان تطابق الـ Store
-        email: email, 
-        password: password, // إضافة الباسورد لتجنب نقص الخصائص
+        username: "Eman Ragab", // دي موجودة في الـ Interface
+        email: email,           // دي موجودة في الـ Interface
+        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Eman", // موجودة في الـ Interface
       });
+      
       router.push("/");
     }
   };
