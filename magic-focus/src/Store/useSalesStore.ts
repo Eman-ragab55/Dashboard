@@ -22,10 +22,14 @@ export interface Product {
   id: number;
   title: string;
   price: number;
-  image: string;
+  description: string;
   category: string;
-  description?: string;
-  quantity?: number;
+  image: string;
+  quantity?: number; // أضيفي ده عشان الـ Cart
+  rating?: {         // وأضيفي ده عشان الـ RecentSales
+    rate: number;
+    count: number;
+  };
 }
 
 export interface User {

@@ -7,6 +7,7 @@ import { TopHeader } from "@/src/Components/Dashboard/TopHeader";
 import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CreditCard, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+// تعريف الواجهة لضمان توافق البيانات
 interface CartItem {
   id: number;
   title: string;
@@ -31,7 +32,6 @@ export default function CartPage() {
   const [isClient, setIsClient] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // الحل الصحيح لمشكلة الـ Hydration ومنع الـ Sync state error
   useEffect(() => {
     const handle = requestAnimationFrame(() => {
       setIsClient(true);
@@ -39,7 +39,6 @@ export default function CartPage() {
     return () => cancelAnimationFrame(handle);
   }, []);
 
-  // استخدام useMemo لتحسين الأداء في الحسابات
   const { subtotal, shipping, total } = useMemo(() => {
     const sub = cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
     const ship = cart.length > 0 ? 15.00 : 0;
@@ -57,7 +56,6 @@ export default function CartPage() {
 
     setIsProcessing(true);
 
-    // محاكاة عملية الدفع
     setTimeout(() => {
       const randomId = Math.floor(Math.random() * 1000);
       
@@ -65,6 +63,8 @@ export default function CartPage() {
         id: randomId,
         username: `Customer_${randomId}`,
         email: `user${randomId}@magicstore.com`,
+        phone: "N/A", // أضفنا الحقول دي عشان الـ Interface الجديد
+        address: { city: "Guest City" },
         name: {
           firstname: "Guest",
           lastname: "User"
@@ -75,9 +75,13 @@ export default function CartPage() {
         id: Math.floor(Math.random() * 90000) + 10000,
         userId: randomId, 
         date: new Date().toISOString(),
-        products: [...cart],
+        // الحل هنا: تحويل المنتجات للشكل اللي الـ Store عاوزه (productId & quantity)
+        products: cart.map(item => ({
+          productId: item.id,
+          quantity: item.quantity || 1
+        })),
         total: total.toFixed(2),
-        status: "Success"
+        status: "Success" as const // التأكيد على أن الـ status قيمة ثابتة
       };
 
       try {
@@ -157,11 +161,12 @@ export default function CartPage() {
                       <div className="flex items-center gap-4 bg-black/40 px-4 py-2 rounded-xl border border-white/10">
                         <button onClick={() => updateQuantity(item.id, "decrease")} className="text-gray-500 hover:text-white transition-colors"><Minus size={14} /></button>
                         <span className="font-bold text-sm min-w-[20px] text-center">{item.quantity || 1}</span>
-                        <button onClick={() => updateQuantity(item.id, "increase")} className="text-gray-500 hover:text-white transition-colors"><Plus size={14} /></button>
+                        <button onClick={() => updateQuantity(item.id, "increase")} className="text-gray-400 hover:text-white transition-colors"><Plus size={14} /></button>
                       </div>
                       
                       <div className="flex items-center gap-6">
-                        <p className="font-black text-xl text-white min-w-[100px] text-right">
+                        {/* استبدلنا min-w-[100px] بـ min-w-25 لحل التحذير */}
+                        <p className="font-black text-xl text-white min-w-25 text-right">
                           ${(item.price * (item.quantity || 1)).toFixed(2)}
                         </p>
                         <button 
