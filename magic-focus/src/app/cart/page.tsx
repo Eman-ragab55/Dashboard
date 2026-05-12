@@ -7,13 +7,13 @@ import { TopHeader } from "@/src/Components/Dashboard/TopHeader";
 import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CreditCard, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-// تعريف الواجهة لضمان توافق البيانات
+// تعريف الواجهة لضمان توافق البيانات - جعلنا الـ quantity أساسية هنا للعمليات الحسابية
 interface CartItem {
   id: number;
   title: string;
   price: number;
   image: string;
-  quantity?: number;
+  quantity: number; 
 }
 
 export default function CartPage() {
@@ -33,10 +33,7 @@ export default function CartPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    const handle = requestAnimationFrame(() => {
-      setIsClient(true);
-    });
-    return () => cancelAnimationFrame(handle);
+    setIsClient(true);
   }, []);
 
   const { subtotal, shipping, total } = useMemo(() => {
@@ -61,10 +58,15 @@ export default function CartPage() {
       
       const newCustomer = {
         id: randomId,
-        username: `Customer_${randomId}`,
-        email: `user${randomId}@magicstore.com`,
-        phone: "N/A", // أضفنا الحقول دي عشان الـ Interface الجديد
-        address: { city: "Guest City" },
+        username: `Guest_${randomId}`,
+        email: `guest${randomId}@salespro.com`,
+        phone: "000-000-0000", 
+        address: { 
+          city: "Cairo",
+          street: "Main St",
+          number: 1,
+          zipcode: "12345"
+        },
         name: {
           firstname: "Guest",
           lastname: "User"
@@ -75,13 +77,13 @@ export default function CartPage() {
         id: Math.floor(Math.random() * 90000) + 10000,
         userId: randomId, 
         date: new Date().toISOString(),
-        // الحل هنا: تحويل المنتجات للشكل اللي الـ Store عاوزه (productId & quantity)
+        // تحويل المنتجات للشكل الذي يتوقعه الـ Store (productId)
         products: cart.map(item => ({
           productId: item.id,
           quantity: item.quantity || 1
         })),
         total: total.toFixed(2),
-        status: "Success" as const // التأكيد على أن الـ status قيمة ثابتة
+        status: "Success" as const 
       };
 
       try {
@@ -101,9 +103,7 @@ export default function CartPage() {
         clearCart();
         router.push("/orders");
       } catch (error) {
-        toast.error("Process Failed", {
-          description: "Something went wrong while saving your order."
-        });
+        toast.error("Process Failed");
       } finally {
         setIsProcessing(false);
       }
@@ -129,7 +129,7 @@ export default function CartPage() {
           <h1 className="text-4xl font-black tracking-tight uppercase italic">Cart Details</h1>
 
           {cart.length === 0 ? (
-            <div className="text-center py-24 bg-[#111]/30 rounded-4xl border border-dashed border-white/10 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500">
+            <div className="text-center py-24 bg-[#111]/30 rounded-4xl border border-dashed border-white/10 flex flex-col items-center justify-center">
               <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6">
                 <ShoppingBag size={40} className="text-gray-600" />
               </div>
@@ -145,7 +145,7 @@ export default function CartPage() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
               
               <div className="xl:col-span-2 space-y-4">
-                {cart.map((item: CartItem) => (
+                {cart.map((item) => (
                   <div key={item.id} className="flex flex-col sm:flex-row items-center justify-between bg-[#111] p-6 rounded-4xl border border-white/5 gap-6 hover:border-purple-500/20 transition-all group relative overflow-hidden">
                     <div className="flex items-center gap-6 w-full sm:w-auto">
                       <div className="w-24 h-24 bg-black/40 rounded-2xl p-4 flex items-center justify-center border border-white/5 shrink-0">
@@ -165,7 +165,6 @@ export default function CartPage() {
                       </div>
                       
                       <div className="flex items-center gap-6">
-                        {/* استبدلنا min-w-[100px] بـ min-w-25 لحل التحذير */}
                         <p className="font-black text-xl text-white min-w-25 text-right">
                           ${(item.price * (item.quantity || 1)).toFixed(2)}
                         </p>
